@@ -11,6 +11,6 @@ cx <files>
 ```
 cut files to clipboard
 ```
-cv
+cv (<files>)
 ```
-paste files from clipboard
+paste files from clipboard or default: all files in clipboard
