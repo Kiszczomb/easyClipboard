@@ -6,3 +6,11 @@ Easy clipboard system for bash
 cc <files>
 ```
 copies files to clipbaord
+```
+cx <files>
+```
+cut files to clipboard
+```
+cv <files>
+```
+paste files from clipboard
