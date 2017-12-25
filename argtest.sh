@@ -1,30 +1,20 @@
 #!/bin/bash
 
-mode="$1"
-shift
-
-case $mode in
-    -c|--copy)
-      echo "Copy"
-      for arg in "$@" ; do
-        echo "$arg"
-      done
-    ;;
-    -x|--cut)
-      echo "Cut"
-      for arg in "$@" ; do
-        echo "$arg"
-      done
-    ;;
-    -v|-p|--paste)
-      echo "Paste"
-      for arg in "$@" ; do
-        echo "$arg"
-      done
-    ;;
-    *)    # unknown option
-    echo "unknown"
-    ;;
+unameOut="$(uname -s)"
+case ${unameOut} in
+  Linux*)     machine=Linux;;
+  Darwin*)    machine=Mac;;
+  CYGWIN*)    machine=Cygwin;;
+  MINGW*)     machine=MinGw;;
+  *)          machine="UNKNOWN:${unameOut}"
+esac
+case ${machine} in
+  Linux)
+  ;;
+  *)
+  echo "Unsupported system. Linux only for now."
+  exit
+  ;;
 esac
 
 
