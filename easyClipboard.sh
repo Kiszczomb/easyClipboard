@@ -1,28 +1,55 @@
 #!/bin/bash
 
-if [ ! -d "/clipboard" ]; then
-  # Control will enter here if /clipboard doesn't exist.
+CLIPBOARD_DIR="/Clipboard"
 
-  sudo mkdir /clipboard
-  sudo chmod 777 /clipboard
+# system detection
+unameOut="$(uname -s)"
+case "${unameOut}" in
+  Linux*)     machine=Linux;;
+  Darwin*)    machine=Mac;;
+  CYGWIN*)    machine=Cygwin;;
+  MINGW*)     machine=MinGw;;
+  *)          machine="UNKNOWN:${unameOut}"
+esac
+case "${machine}" in
+  Linux)
+  ;;
+  *)
+  echo "Unsupported system. Linux only for now."
+  exit
+  ;;
+esac
+
+# check if /clipboard folder not exists
+if [ ! -d "${CLIPBOARD_DIR}" ]; then
+  sudo mkdir "${CLIPBOARD_DIR}"
+  sudo chmod 777 "${CLIPBOARD_DIR}"
   echo "Created open access clipboard folder in /"
 fi
 
-# on -c | --copy argument
-for FILE1 in "$@"
-do
- copy $FILE1 /clipboard
-done
+# reading arguments
 
-# on -x | --cut argument
-for FILE1 in "$@"
-do
- mv $FILE1 /clipboard
-done
+mode="$1" # first arg, mode 
+shift # remove the first argument (mode) from the list
 
-# on -p | --paste argument
-for FILE1 in "$@"
-do
- mv /clipboard/$FILE1 $PWD
- rm /clipboard/$FILE1
-done
+case "$mode" in
+    -c|--copy)
+      echo "Copy"
+      for file in "$@" ; do
+        cp "$file" "${CLIPBOARD_DIR}"
+      done
+    ;;
+    -x|--cut)
+      echo "Cut"
+      for file in "$@" ; do
+        mv "$file" "${CLIPBOARD_DIR}"
+      done
+    ;;
+    -v|-p|--paste)
+      echo "Paste"
+      mv "${CLIPBOARD_DIR}"/* "$PWD"
+    ;;
+    *)    # unknown option
+    echo "Unknown options"
+    ;;
+esac
